@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Ноорог нийтлэлүүд · Удирдлагын самбар{% endblock %}
+{% block content %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% for category, message in messages %}
+    <div class="notice notice-{{ category }}" role="{{ 'status' if category == 'success' else 'alert' }}">{{ message }}</div>
+  {% endfor %}
+{% endwith %}
+<div class="page-heading">
+  <div>
+    <div class="eyebrow">Нийтлэл</div>
+    <h1>Ноорог нийтлэлүүд</h1>
+    <div class="muted">Таны хадгалсан, хараахан нийтлээгүй нийтлэлүүд.</div>
+  </div>
+  <div class="account">
+    <span>{{ email }}</span>
+    <form method="post" action="{{ url_for('logout') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <button class="logout" type="submit">Гарах</button>
+    </form>
+  </div>
+</div>
+{% if error %}<div class="error" role="alert">{{ error }}</div>{% endif %}
+<section class="summary">
+  <div>
+    <div class="summary-label">Нийт ноорог нийтлэл</div>
+    <div class="summary-number">{{ drafts|length }}</div>
+  </div>
+  <div class="summary-icon" aria-hidden="true">▤</div>
+</section>
+<h2 class="section-heading">Хадгалсан нооргууд</h2>
+{% if drafts %}
+  <div class="draft-list">
+    {% for draft in drafts %}
+      <article class="draft">
+        <div class="draft-top">
+          <h3>{{ draft.title }}</h3>
+          <span class="badge">Хүлээгдэж байна</span>
+        </div>
+        <p>{{ draft.content }}</p>
+        <div class="draft-actions">
+          <form method="post" action="{{ url_for('decide_draft', draft_id=draft.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <input type="hidden" name="decision" value="approve">
+            <button class="decision-button approve-button" type="submit">Батлах</button>
+          </form>
+          <form method="post" action="{{ url_for('decide_draft', draft_id=draft.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <input type="hidden" name="decision" value="reject">
+            <button class="decision-button reject-button" type="submit">Татгалзах</button>
+          </form>
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+{% elif not error %}
+  <div class="empty">Одоогоор хадгалсан ноорог алга байна.</div>
+{% endif %}
+{% endblock %}

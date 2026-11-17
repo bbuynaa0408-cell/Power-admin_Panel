@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Бүртгэл засах' if record else 'Бүртгэл нэмэх' }} · {{ service.title }}{% endblock %}
+{% block content %}
+<div class="page-heading">
+  <div>
+    <div class="eyebrow">{{ service.title }}</div>
+    <h1>{{ 'Бүртгэл засах' if record else 'Бүртгэл нэмэх' }}</h1>
+    <div class="muted">Шаардлагатай мэдээллийг бөглөнө үү.</div>
+  </div>
+  <div class="account">
+    <span>{{ email }}</span>
+    <form method="post" action="{{ url_for('logout') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <button class="logout" type="submit">Гарах</button>
+    </form>
+  </div>
+</div>
+{% if errors %}
+  <div class="error" role="alert">
+    {% for error in errors %}<div>{{ error }}</div>{% endfor %}
+  </div>
+{% endif %}
+<section class="form-card">
+  <form class="record-form" method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <div class="form-field">
+      <label for="customer_name">Харилцагчийн нэр</label>
+      <input id="customer_name" name="customer_name" value="{{ form_data.get('customer_name', '') }}" maxlength="120" required>
+    </div>
+    <div class="form-field">
+      <label for="phone">Утасны дугаар</label>
+      <input id="phone" name="phone" type="tel" value="{{ form_data.get('phone', '') }}" maxlength="120" required>
+    </div>
+    <div class="form-field">
+      <label for="vehicle">Автомашины марк, загвар</label>
+      <input id="vehicle" name="vehicle" value="{{ form_data.get('vehicle', '') }}" maxlength="120" required>
+    </div>
+    <div class="form-field">
+      <label for="plate_number">Улсын дугаар</label>
+      <input id="plate_number" name="plate_number" value="{{ form_data.get('plate_number', '') }}" maxlength="120" required>
+    </div>
+    <div class="form-field">
+      <label for="service_date">Үйлчилгээний огноо</label>
+      <input id="service_date" name="service_date" type="date" value="{{ form_data.get('service_date', '') }}" required>
+    </div>
+    {% if service.has_cost %}
+      <div class="form-field">
+        <label for="cost">Үнийн дүн (₮)</label>
+        <input id="cost" name="cost" type="number" min="0" max="9999999999.99" step="0.01" value="{{ form_data.get('cost', '0.00') }}" required>
+      </div>
+    {% endif %}
+    <div class="form-field">
+      <label for="status">Төлөв</label>
+      <select id="status" name="status" required>
+        {% for value, label in status_labels.items() %}
+          <option value="{{ value }}"{% if form_data.get('status', 'pending') == value %} selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-field form-field-wide">
+      <label for="details">Үйлчилгээний тайлбар</label>
+      <textarea id="details" name="details" maxlength="2000" required>{{ form_data.get('details', '') }}</textarea>
+    </div>
+    <div class="form-field form-field-wide form-actions">
+      <button class="button" type="submit">{{ 'Өөрчлөлт хадгалах' if record else 'Бүртгэл хадгалах' }}</button>
+      <a class="secondary-button" href="{{ url_for('service_list', service_key=request.view_args.service_key) }}">Буцах</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Нэвтрэх · Удирдлагын самбар{% endblock %}
+{% block anonymous_content %}
+<div class="login-wrap">
+  <section class="login-card">
+    <div class="eyebrow">Найдвартай ажиллагаа. Мэргэжлийн үйлчилгээ.</div>
+    <h1>Нэвтрэх</h1>
+    <p class="muted">И-мэйл хаяг, нууц үгээ оруулж үргэлжлүүлнэ үү.</p>
+    {% if error %}<div class="error" role="alert">{{ error }}</div>{% endif %}
+    <form method="post" action="{{ url_for('login') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <label for="email">И-мэйл хаяг</label>
+      <input id="email" name="email" type="email" autocomplete="username" required autofocus>
+      <label for="password">Нууц үг</label>
+      <input id="password" name="password" type="password" autocomplete="current-password" required>
+      <button class="button" type="submit">Нэвтрэх</button>
+    </form>
+  </section>
+</div>
+{% endblock %}

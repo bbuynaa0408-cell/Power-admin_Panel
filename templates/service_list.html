@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}{{ service.title }} · Удирдлагын самбар{% endblock %}
+{% block content %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% for category, message in messages %}
+    <div class="notice notice-{{ category }}" role="{{ 'status' if category == 'success' else 'alert' }}">{{ message }}</div>
+  {% endfor %}
+{% endwith %}
+<div class="page-heading">
+  <div>
+    <div class="eyebrow">Засвар үйлчилгээ</div>
+    <h1>{{ service.title }}</h1>
+    <div class="muted">{{ service.description }}</div>
+  </div>
+  <div class="account">
+    <span>{{ email }}</span>
+    <form method="post" action="{{ url_for('logout') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <button class="logout" type="submit">Гарах</button>
+    </form>
+  </div>
+</div>
+{% if error %}<div class="error" role="alert">{{ error }}</div>{% endif %}
+<section class="summary">
+  <div>
+    <div class="summary-label">Нийт бүртгэл</div>
+    <div class="summary-number">{{ records|length }}</div>
+  </div>
+  <div class="summary-icon" aria-hidden="true">▦</div>
+</section>
+<div class="toolbar">
+  <form method="get" action="{{ url_for('service_list', service_key=request.view_args.service_key) }}" role="search">
+    <input type="search" name="q" value="{{ search }}" maxlength="80" placeholder="Нэр, утас, машины дугаараар хайх" aria-label="Бүртгэлээс хайх">
+    <button class="secondary-button" type="submit">Хайх</button>
+  </form>
+  <a class="button" href="{{ url_for('service_create', service_key=request.view_args.service_key) }}">Нэмэх</a>
+</div>
+{% if records %}
+  <div class="table-wrap">
+    <table class="service-table">
+      <thead>
+        <tr>
+          <th scope="col">Харилцагч</th>
+          <th scope="col">Утас</th>
+          <th scope="col">Автомашин</th>
+          <th scope="col">Улсын дугаар</th>
+          <th scope="col">Огноо</th>
+          <th scope="col">Тайлбар</th>
+          {% if service.has_cost %}<th scope="col">Үнийн дүн</th>{% endif %}
+          <th scope="col">Төлөв</th>
+          <th scope="col">Үйлдэл</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for record in records %}
+          <tr>
+            <td class="service-person">{{ record.customer_name }}</td>
+            <td>{{ record.phone }}</td>
+            <td class="service-car">{{ record.vehicle }}</td>
+            <td>{{ record.plate_number }}</td>
+            <td>{{ record.service_date }}</td>
+            <td class="service-detail">{{ record.details }}</td>
+            {% if service.has_cost %}<td>{{ "%.2f"|format(record.cost|float) }} ₮</td>{% endif %}
+            <td>
+              <span class="record-status{% if record.status == 'completed' %} record-status-completed{% elif record.status == 'cancelled' %} record-status-cancelled{% endif %}">
+                {{ status_labels.get(record.status, record.status) }}
+              </span>
+            </td>
+            <td>
+              <div class="record-actions">
+                <a class="edit-link" href="{{ url_for('service_edit', service_key=request.view_args.service_key, record_id=record.id) }}">Засах</a>
+                <a class="delete-link" href="{{ url_for('service_delete', service_key=request.view_args.service_key, record_id=record.id) }}">Устгах</a>
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% elif not error %}
+  <div class="empty">
+    {% if search %}Хайлтад тохирох бүртгэл олдсонгүй.{% else %}Одоогоор бүртгэл алга байна.{% endif %}
+  </div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="mn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Удирдлагын самбар{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: "Noto Sans", "Segoe UI", Arial, sans-serif;
+      color: #142D4E;
+      background: #F5F7FA;
+      font-synthesis: none;
+      --brand-primary: #142D4E;
+      --brand-secondary: #334E68;
+      --brand-accent: #D92D36;
+      --brand-neutral: #F5F7FA;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; }
+    button, input { font: inherit; }
+    .topbar {
+      min-height: 82px; padding: 10px max(24px, calc((100% - 1120px) / 2));
+      display: flex; align-items: center; justify-content: space-between;
+      background: #fff; border-bottom: 1px solid color-mix(in srgb, var(--brand-secondary) 14%, transparent);
+    }
+    .brand { display: flex; align-items: center; gap: 12px; color: var(--brand-primary); }
+    .brand-logo { display: block; width: 54px; height: 54px; object-fit: contain; }
+    .brand-name {
+      font-family: Manrope, "Segoe UI", sans-serif;
+      font-size: 15px; font-weight: 800; letter-spacing: -.35px;
+    }
+    .topbar-note { color: var(--brand-secondary); font-size: 12px; font-weight: 600; }
+    main { width: min(1120px, calc(100% - 40px)); margin: 50px auto; }
+    .app-shell {
+      display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 42px;
+      width: min(1320px, calc(100% - 48px)); margin: 0 auto;
+    }
+    .sidebar { padding-top: 40px; }
+    .side-nav { display: grid; gap: 7px; }
+    .nav-link {
+      display: flex; align-items: center; gap: 12px; min-height: 46px; padding: 0 14px;
+      border-radius: 9px; color: var(--brand-secondary); font-size: 14px; font-weight: 600;
+      text-decoration: none; transition: background .15s ease, color .15s ease;
+    }
+    .nav-link:hover { background: #fff; color: var(--brand-primary); }
+    .nav-link.active { background: var(--brand-primary); color: #fff; }
+    .nav-icon { width: 20px; text-align: center; font-size: 17px; line-height: 1; }
+    .app-shell > main { width: 100%; min-width: 0; margin: 40px 0 56px; }
+    .coming-card {
+      display: grid; min-height: 300px; place-content: center; justify-items: center; gap: 12px;
+      border: 1px solid color-mix(in srgb, var(--brand-secondary) 14%, transparent);
+      border-radius: 12px; background: #fff; text-align: center;
+    }
+    .coming-mark {
+      display: grid; width: 54px; height: 54px; place-items: center; margin-bottom: 5px;
+      border-radius: 15px; color: var(--brand-accent);
+      background: color-mix(in srgb, var(--brand-accent) 9%, white); font-size: 24px;
+    }
+    .coming-title { margin: 0; font-size: 22px; font-weight: 800; }
+    .coming-copy { margin: 0; color: var(--brand-secondary); font-size: 14px; }
+    .login-wrap { min-height: calc(100vh - 182px); display: grid; place-items: center; margin: 0 auto; }
+    .login-card {
+      width: min(100%, 440px); padding: 40px; border: 1px solid color-mix(in srgb, var(--brand-secondary) 14%, transparent);
+      border-radius: 16px; background: #fff; box-shadow: 0 18px 56px color-mix(in srgb, var(--brand-primary) 9%, transparent);
+    }
+    .eyebrow { color: var(--brand-accent); letter-spacing: .4px; font-size: 12px; font-weight: 700; }
+    h1, h2, h3 { font-family: Manrope, "Noto Sans", sans-serif; color: var(--brand-primary); }
+    h1 { margin: 10px 0 8px; font-size: 29px; font-weight: 800; letter-spacing: -.8px; }
+    .muted { color: var(--brand-secondary); line-height: 1.7; }
+    form { margin-top: 24px; }
+    label { display: block; margin: 17px 0 8px; color: var(--brand-primary); font-size: 13px; font-weight: 600; }
+    input {
+      width: 100%; padding: 12px 13px; border: 1px solid color-mix(in srgb, var(--brand-secondary) 23%, transparent); border-radius: 8px;
+      color: var(--brand-primary); background: #fff; outline: none;
+    }
+    input:focus { border-color: var(--brand-secondary); box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-secondary) 13%, transparent); }
+    .button {
+      display: inline-flex; align-items: center; justify-content: center;
+      border: 0; border-radius: 8px; background: var(--brand-primary); color: #fff;
+      padding: 13px 18px; font-weight: 700; text-decoration: none; cursor: pointer;
+    }
+    .button:hover { background: var(--brand-secondary); }
+    .login-card .button { width: 100%; margin-top: 22px; }
+    .error {
+      margin-top: 18px; padding: 12px 14px; border-radius: 8px;
+      color: var(--brand-accent); background: color-mix(in srgb, var(--brand-accent) 9%, white); font-size: 13px; line-height: 1.6;
+    }
+    .notice {
+      margin-bottom: 20px; padding: 13px 15px; border-radius: 8px;
+      font-size: 13px; line-height: 1.6;
+    }
+    .notice-success {
+      color: var(--brand-primary);
+      background: color-mix(in srgb, var(--brand-primary) 9%, white);
+    }
+    .notice-error {
+      color: var(--brand-accent);
+      background: color-mix(in srgb, var(--brand-accent) 9%, white);
+    }
+    .page-heading { display: flex; align-items: end; justify-content: space-between; gap: 20px; margin-bottom: 28px; }
+    .page-heading h1 { margin-top: 8px; }
+    .account { display: flex; align-items: center; gap: 15px; min-width: 0; color: var(--brand-secondary); font-size: 13px; }
+    .account > span { min-width: 0; overflow-wrap: anywhere; }
+    .account form { margin: 0; }
+    .logout { border: 1px solid color-mix(in srgb, var(--brand-secondary) 24%, transparent); border-radius: 8px; color: var(--brand-primary); background: #fff; padding: 9px 13px; font-weight: 600; cursor: pointer; }
+    .logout:hover { border-color: var(--brand-accent); color: var(--brand-accent); }
+    .summary {
+      display: flex; align-items: center; justify-content: space-between; gap: 24px;
+      padding: 24px 26px; border: 1px solid color-mix(in srgb, var(--brand-secondary) 14%, transparent); border-radius: 12px;
+      background: #fff; margin-bottom: 27px;
+    }
+    .summary-label { color: var(--brand-secondary); font-size: 13px; font-weight: 500; }
+    .summary-number { margin-top: 6px; color: var(--brand-primary); font-family: Manrope, "Noto Sans", sans-serif; font-size: 32px; font-weight: 800; }
+    .summary-icon {
+      width: 48px; height: 48px; display: grid; place-items: center;
+      border-radius: 12px; color: var(--brand-accent); background: color-mix(in srgb, var(--brand-accent) 9%, white); font-size: 21px;
+    }
+    .section-heading { margin: 34px 0 15px; font-size: 18px; font-weight: 700; }
+    .draft-list { display: grid; gap: 13px; }
+    .draft {
+      padding: 21px 23px; border: 1px solid color-mix(in srgb, var(--brand-secondary) 14%, transparent); border-radius: 12px;
+      background: #fff; transition: border-color .15s ease, box-shadow .15s ease;
+    }
+    .draft:hover { border-color: color-mix(in srgb, var(--brand-secondary) 38%, transparent); box-shadow: 0 8px 24px color-mix(in srgb, var(--brand-primary) 6%, transparent); }
+    .draft-top { display: flex; justify-content: space-between; gap: 15px; align-items: center; }
+    .draft h3 { margin: 0; font-size: 16px; font-weight: 700; }
+    .badge { padding: 5px 10px; border-radius: 999px; color: var(--brand-accent); background: color-mix(in srgb, var(--brand-accent) 9%, white); font-size: 11px; font-weight: 700; }
+    .draft p { margin: 10px 0 0; color: var(--brand-secondary); font-size: 13px; line-height: 1.7; white-space: pre-wrap; }
+    .draft-actions { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 17px; }
+    .draft-actions form { margin: 0; }
+    .decision-button {
+      min-height: 36px; padding: 8px 13px; border: 1px solid transparent;
+      border-radius: 7px; font-size: 12px; font-weight: 700; cursor: pointer;
+    }
+    .approve-button { color: #fff; background: var(--brand-primary); }
+    .approve-button:hover { background: var(--brand-secondary); }
+    .reject-button {
+      border-color: color-mix(in srgb, var(--brand-accent) 30%, transparent);
+      color: var(--brand-accent); background: #fff;
+    }
+    .reject-button:hover { background: color-mix(in srgb, var(--brand-accent) 8%, white); }
+    .toolbar {
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      margin-bottom: 20px;
+    }
+    .toolbar form { display: flex; flex: 1; gap: 9px; max-width: 470px; margin: 0; }
+    .toolbar input { min-width: 0; }
+    .toolbar .button { flex: 0 0 auto; }
+    .form-card, .confirm-card {
+      padding: 26px; border: 1px solid color-mix(in srgb, var(--brand-secondary) 14%, transparent);
+      border-radius: 12px; background: #fff;
+    }
+    .record-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 18px; margin: 0; }
+    .form-field { min-width: 0; }
+    .form-field-wide { grid-column: 1 / -1; }
+    .form-field label { margin-top: 16px; }
+    .form-field textarea, .form-field select {
+      width: 100%; padding: 12px 13px; border: 1px solid color-mix(in srgb, var(--brand-secondary) 23%, transparent);
+      border-radius: 8px; color: var(--brand-primary); background: #fff; outline: none; font: inherit;
+    }
+    .form-field textarea { min-height: 110px; resize: vertical; }
+    .form-field textarea:focus, .form-field select:focus { border-color: var(--brand-secondary); box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-secondary) 13%, transparent); }
+    .form-actions, .confirm-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+    .secondary-button, .edit-link, .delete-link {
+      display: inline-flex; align-items: center; justify-content: center; min-height: 36px;
+      padding: 8px 12px; border: 1px solid color-mix(in srgb, var(--brand-secondary) 24%, transparent);
+      border-radius: 7px; color: var(--brand-primary); background: #fff; font-size: 12px;
+      font-weight: 700; text-decoration: none; cursor: pointer;
+    }
+    .secondary-button:hover, .edit-link:hover { background: var(--brand-neutral); }
+    .delete-link { border-color: color-mix(in srgb, var(--brand-accent) 30%, transparent); color: var(--brand-accent); }
+    .delete-link:hover { background: color-mix(in srgb, var(--brand-accent) 8%, white); }
+    .record-actions { display: flex; gap: 7px; }
+    .service-table { width: 100%; min-width: 930px; border-collapse: collapse; text-align: left; }
+    .service-table th {
+      padding: 13px 14px; color: var(--brand-secondary); background: var(--brand-neutral);
+      font-size: 12px; font-weight: 700; white-space: nowrap;
+    }
+    .service-table td {
+      padding: 14px; border-top: 1px solid color-mix(in srgb, var(--brand-secondary) 12%, transparent);
+      color: var(--brand-primary); font-size: 12px; vertical-align: middle;
+    }
+    .service-table tbody tr:hover { background: color-mix(in srgb, var(--brand-neutral) 70%, white); }
+    .service-person, .service-car { font-weight: 700; white-space: nowrap; }
+    .service-detail { min-width: 160px; max-width: 240px; color: var(--brand-secondary) !important; }
+    .record-status {
+      display: inline-flex; padding: 5px 8px; border-radius: 999px;
+      color: var(--brand-secondary); background: var(--brand-neutral);
+      font-size: 10px; font-weight: 700; white-space: nowrap;
+    }
+    .record-status-completed { color: var(--brand-primary); background: color-mix(in srgb, var(--brand-primary) 10%, white); }
+    .record-status-cancelled { color: var(--brand-accent); background: color-mix(in srgb, var(--brand-accent) 9%, white); }
+    .confirm-card { max-width: 560px; }
+    .confirm-card p { color: var(--brand-secondary); line-height: 1.7; }
+    .confirm-name { color: var(--brand-primary); font-weight: 700; }
+    .empty { padding: 40px 20px; border: 1px dashed color-mix(in srgb, var(--brand-secondary) 30%, transparent); border-radius: 12px; color: var(--brand-secondary); text-align: center; background: #fff; }
+    .table-wrap {
+      overflow-x: auto; border: 1px solid color-mix(in srgb, var(--brand-secondary) 14%, transparent);
+      border-radius: 12px; background: #fff;
+    }
+    .booking-table { width: 100%; min-width: 760px; border-collapse: collapse; text-align: left; }
+    .booking-table th {
+      padding: 14px 17px; color: var(--brand-secondary); background: var(--brand-neutral);
+      font-size: 12px; font-weight: 700; white-space: nowrap;
+    }
+    .booking-table td {
+      padding: 16px 17px; border-top: 1px solid color-mix(in srgb, var(--brand-secondary) 12%, transparent);
+      color: var(--brand-primary); font-size: 13px; white-space: nowrap;
+    }
+    .booking-table tbody tr:hover { background: color-mix(in srgb, var(--brand-neutral) 70%, white); }
+    .booking-name { font-weight: 700; }
+    .booking-email { color: var(--brand-secondary) !important; }
+    .status-badge {
+      display: inline-flex; padding: 5px 9px; border-radius: 999px;
+      color: var(--brand-secondary); background: var(--brand-neutral); font-size: 11px; font-weight: 700;
+    }
+    .status-confirmed { color: var(--brand-primary); background: color-mix(in srgb, var(--brand-primary) 10%, white); }
+    .status-cancelled { color: var(--brand-accent); background: color-mix(in srgb, var(--brand-accent) 9%, white); }
+    @media (max-width: 900px) {
+      .app-shell { display: block; width: calc(100% - 48px); }
+      .sidebar { padding-top: 16px; }
+      .side-nav { display: flex; gap: 5px; overflow-x: auto; padding-bottom: 4px; }
+      .nav-link { min-height: 42px; padding: 0 12px; white-space: nowrap; font-size: 13px; }
+      .app-shell > main { margin: 26px 0 40px; }
+      .page-heading { align-items: start; flex-direction: column; }
+      .account { width: 100%; justify-content: space-between; flex-wrap: wrap; }
+    }
+    @media (max-width: 600px) {
+      .topbar { min-height: 70px; padding: 8px 20px; }
+      .brand-logo { width: 46px; height: 46px; }
+      .brand-name { font-size: 13px; }
+      .topbar-note { font-size: 11px; }
+      main { width: min(100% - 28px, 1120px); margin: 34px auto; }
+      .app-shell { display: block; width: calc(100% - 28px); }
+      .login-card { padding: 27px 23px; }
+      .draft { padding: 17px; }
+      .booking-table { min-width: 690px; }
+      .booking-table th, .booking-table td { padding: 13px 12px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img class="brand-logo" src="{{ url_for('brand_logo') }}" alt="Брэндийн лого">
+      <span class="brand-name">Автомашины засвар үйлчилгээ</span>
+    </div>
+    <span class="topbar-note">УДИРДЛАГЫН САМБАР</span>
+  </header>
+  {% if session.get('user_email') %}
+  <div class="app-shell">
+    <aside class="sidebar">
+      <nav class="side-nav" aria-label="Үндсэн цэс">
+        <a class="nav-link{% if active_section == 'content' %} active{% endif %}" href="{{ url_for('dashboard') }}"{% if active_section == 'content' %} aria-current="page"{% endif %}>
+          <span class="nav-icon" aria-hidden="true">▤</span><span>Контент</span>
+        </a>
+        <a class="nav-link{% if active_section == 'facebook' %} active{% endif %}" href="{{ url_for('facebook') }}"{% if active_section == 'facebook' %} aria-current="page"{% endif %}>
+          <span class="nav-icon" aria-hidden="true">f</span><span>Facebook</span>
+        </a>
+        <a class="nav-link{% if active_section == 'chat' %} active{% endif %}" href="{{ url_for('chat') }}"{% if active_section == 'chat' %} aria-current="page"{% endif %}>
+          <span class="nav-icon" aria-hidden="true">◌</span><span>Чат</span>
+        </a>
+        <a class="nav-link{% if active_section == 'bookings' %} active{% endif %}" href="{{ url_for('bookings') }}"{% if active_section == 'bookings' %} aria-current="page"{% endif %}>
+          <span class="nav-icon" aria-hidden="true">▦</span><span>Захиалга</span>
+        </a>
+        <a class="nav-link{% if active_section == 'diagnostics' %} active{% endif %}" href="{{ url_for('service_list', service_key='shake-diagnostics') }}"{% if active_section == 'diagnostics' %} aria-current="page"{% endif %}>
+          <span class="nav-icon" aria-hidden="true">⌕</span><span>Сэгсэрдэг оношилгоо</span>
+        </a>
+        <a class="nav-link{% if active_section == 'aggregate_repairs' %} active{% endif %}" href="{{ url_for('service_list', service_key='aggregate-repairs') }}"{% if active_section == 'aggregate_repairs' %} aria-current="page"{% endif %}>
+          <span class="nav-icon" aria-hidden="true">⚙</span><span>Агрегат засвар</span>
+        </a>
+      </nav>
+    </aside>
+    <main>{% block content %}{% endblock %}</main>
+  </div>
+  {% else %}
+  <main>{% block anonymous_content %}{% endblock %}</main>
+  {% endif %}
+</body>
+</html>

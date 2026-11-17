@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}{{ section_title }} · Удирдлагын самбар{% endblock %}
+{% block content %}
+<div class="page-heading">
+  <div>
+    <div class="eyebrow">Удахгүй нэмэгдэнэ</div>
+    <h1>{{ section_title }}</h1>
+  </div>
+  <div class="account">
+    <span>{{ email }}</span>
+    <form method="post" action="{{ url_for('logout') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <button class="logout" type="submit">Гарах</button>
+    </form>
+  </div>
+</div>
+<section class="coming-card">
+  <div class="coming-mark" aria-hidden="true">◷</div>
+  <h2 class="coming-title">Удахгүй</h2>
+  <p class="coming-copy">{{ section_title }} хэсэг удахгүй бэлэн болно.</p>
+</section>
+{% endblock %}

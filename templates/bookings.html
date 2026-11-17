@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Захиалга · Удирдлагын самбар{% endblock %}
+{% block content %}
+<div class="page-heading">
+  <div>
+    <div class="eyebrow">Үйлчилгээ</div>
+    <h1>Захиалга</h1>
+    <div class="muted">Хэрэглэгчдийн захиалгын мэдээлэл.</div>
+  </div>
+  <div class="account">
+    <span>{{ email }}</span>
+    <form method="post" action="{{ url_for('logout') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <button class="logout" type="submit">Гарах</button>
+    </form>
+  </div>
+</div>
+{% if error %}<div class="error" role="alert">{{ error }}</div>{% endif %}
+<section class="summary">
+  <div>
+    <div class="summary-label">Нийт захиалга</div>
+    <div class="summary-number">{{ bookings|length }}</div>
+  </div>
+  <div class="summary-icon" aria-hidden="true">▦</div>
+</section>
+{% if bookings %}
+  {% set status_labels = {'pending': 'Хүлээгдэж байна', 'confirmed': 'Баталгаажсан', 'cancelled': 'Цуцалсан'} %}
+  <div class="table-wrap">
+    <table class="booking-table">
+      <thead>
+        <tr>
+          <th scope="col">Захиалагч</th>
+          <th scope="col">И-мэйл хаяг</th>
+          <th scope="col">Огноо</th>
+          <th scope="col">Цаг</th>
+          <th scope="col">Хүний тоо</th>
+          <th scope="col">Төлөв</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for booking in bookings %}
+          <tr>
+            <td class="booking-name">{{ booking.customer_name }}</td>
+            <td class="booking-email">{{ booking.customer_email }}</td>
+            <td>{{ booking.booking_date }}</td>
+            <td>{{ booking.booking_time }}</td>
+            <td>{{ booking.guest_count }}</td>
+            <td>
+              <span class="status-badge{% if booking.status == 'confirmed' %} status-confirmed{% elif booking.status == 'cancelled' %} status-cancelled{% endif %}">
+                {{ status_labels.get(booking.status, booking.status) }}
+              </span>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% elif not error %}
+  <div class="empty">Одоогоор захиалга алга байна.</div>
+{% endif %}
+{% endblock %}

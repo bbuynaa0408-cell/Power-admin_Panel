@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Устгах эсэх · {{ service.title }}{% endblock %}
+{% block content %}
+<div class="page-heading">
+  <div>
+    <div class="eyebrow">{{ service.title }}</div>
+    <h1>Устгах эсэх</h1>
+  </div>
+  <div class="account">
+    <span>{{ email }}</span>
+    <form method="post" action="{{ url_for('logout') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <button class="logout" type="submit">Гарах</button>
+    </form>
+  </div>
+</div>
+<section class="confirm-card">
+  <p>Та энэ бүртгэлийг устгах гэж байна. Устгасны дараа сэргээх боломжгүй.</p>
+  <p class="confirm-name">{{ record.customer_name }} · {{ record.vehicle }} · {{ record.plate_number }}</p>
+  <div class="confirm-actions">
+    <form method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <button class="decision-button reject-button" type="submit">Тийм, устгах</button>
+    </form>
+    <a class="secondary-button" href="{{ url_for('service_list', service_key=request.view_args.service_key) }}">Болих</a>
+  </div>
+</section>
+{% endblock %}
